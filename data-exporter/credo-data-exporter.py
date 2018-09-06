@@ -76,15 +76,15 @@ def update_data(data_type):
     repeat = False
     time_since = 0
 
-    if os.path.exists(args.dir + "/last_" + data_type):
-        with open(args.dir + "/last_" + data_type) as f:
+    if os.path.exists(args.dir + "/last_exported_" + data_type):
+        with open(args.dir + "/last_exported_" + data_type) as f:
             time_since = int(f.readline())
 
     j = get_base_request()
 
     j["since"] = time_since
     j["until"] = int((time.time() + 3600 * 24) * 1000)
-    j["limit"] = 100000
+    j["limit"] = 250000
     j["data_type"] = data_type
 
     r = requests.post(args.endpoint + "/data_export", json=j, headers={"authorization": "Token " + get_token()})
@@ -97,7 +97,7 @@ def update_data(data_type):
 
     print("Exported data will appear at {}".format(export_url))
 
-    time.sleep(10)
+    time.sleep(30)
 
     while True:
         r = requests.get(export_url)
@@ -112,7 +112,7 @@ def update_data(data_type):
                 r.raise_for_status()
 
             events = r.json()[data_type + "s"]
-            if len(events) == 100000:
+            if len(events) == 250000:
                 repeat = True
 
             if events:
@@ -125,7 +125,7 @@ def update_data(data_type):
                     for chunk in r.iter_content(1024):
                         f.write(chunk)
 
-                with open(args.dir + "/last_" + data_type, "w+") as f:
+                with open(args.dir + "/last_exported_" + data_type, "w+") as f:
                     f.write(str(last_timestamp))
             else:
                 print("No new events")

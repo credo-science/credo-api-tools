@@ -2,14 +2,14 @@ A tool for incremental data export.
 
 ## Usage
 
-```bash
+```
 $ chmod +x credo-data-exporter.py
 $ ./credo-data-exporter.py --user yourusername --password '3p7Cs3U9TepAfZsXkN7x9VtLz'
 
 ```
 
 ## Help
-```bash
+```
 $ ./credo-data-exporter.py --help
 
 usage: credo-data-exporter.py [-h] [--username USERNAME] [--password PASSWORD]
