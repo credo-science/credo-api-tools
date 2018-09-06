@@ -84,7 +84,7 @@ def update_data(data_type):
 
     j["since"] = time_since
     j["until"] = int((time.time() + 3600 * 24) * 1000)
-    j["limit"] = 250000
+    j["limit"] = 100000
     j["data_type"] = data_type
 
     r = requests.post(args.endpoint + "/data_export", json=j, headers={"authorization": "Token " + get_token()})
@@ -112,7 +112,7 @@ def update_data(data_type):
                 r.raise_for_status()
 
             events = r.json()[data_type + "s"]
-            if len(events) == 250000:
+            if len(events) == 100000:
                 repeat = True
 
             if events:
@@ -133,6 +133,8 @@ def update_data(data_type):
             break
 
     if repeat:
+        del r
+
         print("There is more data to download, updating again.")
         update_data(data_type)
 
