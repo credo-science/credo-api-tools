@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser(description="Tool for incremental processing of
 parser.add_argument("--dir", "-d", help="Path to data directory", default="credo-data-export")
 parser.add_argument("--plugin-dir", help="Path to directory containing processing plugins", default="plugins")
 parser.add_argument("--data-type", "-k", help="Type of event to process (ping/detection/all)", default="all")
+parser.add_argument("--delete", action='store_true', help="Delete processed files")
 
 args = parser.parse_args()
 
@@ -88,6 +89,9 @@ def process_new(data_type):
 
         with open("{}/processed_{}s".format(args.dir, data_type), "a") as f:
             f.write("{}\n".format(file))
+
+        if args.delete:
+            os.remove("{}/{}s/{}".format(args.dir, data_type, file))
 
 
 def main():
