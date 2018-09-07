@@ -9,3 +9,9 @@ $ chmod +x credo-data-processorr.py
 $ ./credo-data-processor.py --dir ../credo-data-export --plugin-dir plugins
 
 ```
+
+## Objects
+
+[Detection](https://github.com/credo-science/credo-webapp/tree/develop/credoapiv2#detection-object)
+
+[Ping](https://github.com/credo-science/credo-webapp/tree/develop/credoapiv2#apiv2ping)

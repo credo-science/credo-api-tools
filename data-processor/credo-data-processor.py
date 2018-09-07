@@ -77,6 +77,7 @@ def process_new(data_type):
 
     for spec, plugin in zip(specs, plugins):
         spec.loader.exec_module(plugin)
+        print("Loaded plugin: {}".format(plugin))
 
     for file in get_new_files(data_type):
         with open("{}/{}s/{}".format(args.dir, data_type, file)) as f:

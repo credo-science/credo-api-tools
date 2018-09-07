@@ -14,6 +14,7 @@ parser.add_argument("--password", "-p", help="Password")
 parser.add_argument("--endpoint", help="API endpoint", default="https://api.credo.science/api/v2")
 parser.add_argument("--dir", "-d", help="Path to data directory", default="credo-data-export")
 parser.add_argument("--token", "-t", help="Access token, used instead of username and password to authenticate")
+parser.add_argument("--max-chunk-size", "-m", help="Maximum number of events in each file", type=int, default=100000)
 parser.add_argument("--data-type", "-k", help="Type of event to update (ping/detection/all)", default="all")
 
 args = parser.parse_args()
@@ -84,7 +85,7 @@ def update_data(data_type):
 
     j["since"] = time_since
     j["until"] = int((time.time() + 3600 * 24) * 1000)
-    j["limit"] = 250000
+    j["limit"] = args.max_chunk_size
     j["data_type"] = data_type
 
     r = requests.post(args.endpoint + "/data_export", json=j, headers={"authorization": "Token " + get_token()})
@@ -112,7 +113,7 @@ def update_data(data_type):
                 r.raise_for_status()
 
             events = r.json()[data_type + "s"]
-            if len(events) == 250000:
+            if len(events) == args.max_chunk_size:
                 repeat = True
 
             if events:
@@ -122,7 +123,7 @@ def update_data(data_type):
                 with open(
                     "{}/{}s/export_{}_{}.json".format(args.dir, data_type, time_since, last_timestamp), "wb"
                 ) as f:
-                    for chunk in r.iter_content(1024):
+                    for chunk in r.iter_content(4096):
                         f.write(chunk)
 
                 with open(args.dir + "/last_exported_" + data_type, "w+") as f:
