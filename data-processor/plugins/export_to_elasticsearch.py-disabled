@@ -12,7 +12,7 @@ DETECTION_INDEX_CONFIG = {
                 "accuracy": {"type": "float"},
                 "altitude": {"type": "float"},
                 "device_id": {"type": "keyword"},
-                "frame_content": {"type": "binary", "store": True},
+                "frame_content": {"type": "binary"},
                 "height": {"type": "long"},
                 "id": {"type": "long"},
                 "location": {"type": "geo_point"},
