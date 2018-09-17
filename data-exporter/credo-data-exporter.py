@@ -3,6 +3,7 @@ import argparse
 import errno
 import os
 import platform
+import random
 import time
 
 import requests
@@ -21,6 +22,10 @@ args = parser.parse_args()
 
 args.endpoint = args.endpoint.rstrip("/")
 args.dir = args.dir.rstrip("/")
+
+
+def random_sleep(seconds):
+    time.sleep(seconds + random.random() * seconds)
 
 
 def prepare_workspace():
@@ -98,14 +103,21 @@ def update_data(data_type):
 
     print("Exported data will appear at {}".format(export_url))
 
-    time.sleep(30)
+    random_sleep(30)
+
+    retries = 0
 
     while True:
         r = requests.get(export_url)
 
         if r.status_code == 404:
             print("Waiting for data export to finish")
-            time.sleep(10)
+            retries += 1
+
+            if retries < 10:
+                random_sleep(20)
+            else:
+                random_sleep(300)
 
         else:
             if not r.ok:
