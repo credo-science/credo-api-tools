@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import argparse
 import errno
 import os
@@ -16,7 +18,8 @@ parser.add_argument("--endpoint", help="API endpoint", default="https://api.cred
 parser.add_argument("--dir", "-d", help="Path to data directory", default="credo-data-export")
 parser.add_argument("--token", "-t", help="Access token, used instead of username and password to authenticate")
 parser.add_argument("--max-chunk-size", "-m", help="Maximum number of events in each file", type=int, default=100000)
-parser.add_argument("--data-type", "-k", help="Type of event to update (ping/detection/all)", default="all")
+parser.add_argument("--data-type", "-k", help="Type of event to update (ping/detection/all/none)", default="all")
+parser.add_argument("--mapping-type", "-l", help="Type of mapping to update (device/user/all/none)", default="none")
 
 args = parser.parse_args()
 
@@ -76,6 +79,48 @@ def get_token():
         r.raise_for_status()
 
     return r.json()["token"]
+
+
+def update_mapping(mapping_type):
+    j = get_base_request()
+    j["mapping_type"] = mapping_type
+
+    r = requests.post(args.endpoint + "/mapping_export", json=j, headers={"authorization": "Token " + get_token()})
+
+    if not r.ok:
+        print(r.json())
+        r.raise_for_status()
+
+    export_url = r.json()["url"]
+
+    print("Exported mapping will appear at {}".format(export_url))
+
+    random_sleep(30)
+
+    retries = 0
+
+    while True:
+        r = requests.get(export_url)
+
+        if r.status_code == 404:
+            print("Waiting for mapping export to finish")
+            retries += 1
+
+            if retries < 10:
+                random_sleep(20)
+            else:
+                random_sleep(300)
+
+        else:
+            if not r.ok:
+                print(r)
+                r.raise_for_status()
+
+            break
+
+    with open("{}/{}_mapping.json".format(args.dir, mapping_type), "wb") as f:
+        for chunk in r.iter_content(4096):
+            f.write(chunk)
 
 
 def update_data(data_type):
@@ -153,6 +198,14 @@ def update_data(data_type):
 
 
 def main():
+    if args.mapping_type in ["user", "all"]:
+        print("Updating user mapping")
+        update_mapping("user")
+
+    if args.mapping_type in ["device", "all"]:
+        print("Updating device mapping")
+        update_mapping("device")
+
     if args.data_type in ["detection", "all"]:
         print("Updating detections")
         update_data("detection")
