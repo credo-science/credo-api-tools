@@ -7,7 +7,11 @@ from elasticsearch.helpers import bulk
 USER_INDEX_NAME = "credo-users"
 USER_INDEX_CONFIG = {
     "settings": {"number_of_shards": 3, "number_of_replicas": 1},
-    "mappings": {"user": {"properties": {"id": {"type": "long"}, "username": {"type": "keyword"}}}},
+    "mappings": {
+        "user": {
+            "properties": {"id": {"type": "long"}, "username": {"type": "keyword"}, "display_name": {"type": "keyword"}}
+        }
+    },
 }
 
 DEVICE_INDEX_NAME = "credo-devices"
