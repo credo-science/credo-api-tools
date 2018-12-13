@@ -103,13 +103,16 @@ def update_mapping(mapping_type):
         r = requests.get(export_url)
 
         if r.status_code == 404:
-            print("Waiting for mapping export to finish")
+            print("Waiting for mapping export to finish (retries: {})".format(retries))
             retries += 1
 
-            if retries < 10:
-                random_sleep(20)
-            else:
+            if retries in range(10):
+                random_sleep(30)
+            elif retries in range(10, 15):
                 random_sleep(300)
+            else:
+                print("Exiting because data was not ready in time. Try again later.")
+                return
 
         else:
             if not r.ok:
@@ -156,13 +159,16 @@ def update_data(data_type):
         r = requests.get(export_url)
 
         if r.status_code == 404:
-            print("Waiting for data export to finish")
+            print("Waiting for mapping export to finish (retries: {})".format(retries))
             retries += 1
 
-            if retries < 10:
-                random_sleep(20)
-            else:
+            if retries in range(10):
+                random_sleep(30)
+            elif retries in range(10, 15):
                 random_sleep(300)
+            else:
+                print("Exiting because data was not ready in time. Try again later.")
+                return
 
         else:
             if not r.ok:
