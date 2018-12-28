@@ -212,6 +212,10 @@ def main():
         print("Updating device mapping")
         update_mapping("device")
 
+    if args.mapping_type in ["team", "all"]:
+        print("Updating team mapping")
+        update_mapping("team")
+
     if args.data_type in ["detection", "all"]:
         print("Updating detections")
         update_data("detection")
