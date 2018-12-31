@@ -30,6 +30,12 @@ DEVICE_INDEX_CONFIG = {
     },
 }
 
+TEAM_INDEX_NAME = "credo-teams"
+TEAM_INDEX_CONFIG = {
+    "settings": {"number_of_shards": 1, "number_of_replicas": 1},
+    "mappings": {"team": {"properties": {"id": {"type": "long"}, "name": {"type": "keyword"}}}},
+}
+
 parser = argparse.ArgumentParser(description="Tool for exporting CREDO mappings to Elasticsearch")
 
 parser.add_argument("--host", help="Elasticsearch host", default="127.0.0.1")
@@ -51,6 +57,11 @@ def export_device_mapping(devices):
     bulk(es, devices, index=DEVICE_INDEX_NAME, doc_type="device", raise_on_exception=False)
 
 
+def export_team_mapping(teams):
+    es.indices.create(TEAM_INDEX_NAME, body=TEAM_INDEX_CONFIG, ignore=400)
+    bulk(es, teams, index=DEVICE_INDEX_NAME, doc_type="team", raise_on_exception=False)
+
+
 def main():
     with open(args.file) as f:
         mapping = json.load(f)
@@ -64,6 +75,11 @@ def main():
             if args.clear:
                 es.indices.delete(index=DEVICE_INDEX_NAME, ignore=[400, 404])
             export_device_mapping(mapping["devices"])
+
+        if "teams" in mapping.keys():
+            if args.clear:
+                es.indices.delete(index=TEAM_INDEX_NAME, ignore=[400, 404])
+            export_team_mapping(mapping["teams"])
 
 
 if __name__ == "__main__":
