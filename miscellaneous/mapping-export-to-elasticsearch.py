@@ -59,7 +59,7 @@ def export_device_mapping(devices):
 
 def export_team_mapping(teams):
     es.indices.create(TEAM_INDEX_NAME, body=TEAM_INDEX_CONFIG, ignore=400)
-    bulk(es, teams, index=DEVICE_INDEX_NAME, doc_type="team", raise_on_exception=False)
+    bulk(es, teams, index=TEAM_INDEX_NAME, doc_type="team", raise_on_exception=False)
 
 
 def main():
