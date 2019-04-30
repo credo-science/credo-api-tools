@@ -7,7 +7,7 @@ from elasticsearch.helpers import bulk
 USER_INDEX_NAME = "credo-users"
 USER_INDEX_CONFIG = {
     "settings": {"index": {"number_of_shards": 1, "number_of_replicas": 0}},
-    "mapping": {
+    "mappings": {
         "properties": {
             "id": {"type": "long"},
             "username": {"type": "keyword"},
@@ -19,7 +19,7 @@ USER_INDEX_CONFIG = {
 DEVICE_INDEX_NAME = "credo-devices"
 DEVICE_INDEX_CONFIG = {
     "settings": {"index": {"number_of_shards": 1, "number_of_replicas": 0}},
-    "mapping": {
+    "mappings": {
         "properties": {
             "device_model": {"type": "keyword"},
             "system_version": {"type": "keyword"},
@@ -33,7 +33,7 @@ DEVICE_INDEX_CONFIG = {
 TEAM_INDEX_NAME = "credo-teams"
 TEAM_INDEX_CONFIG = {
     "settings": {"index": {"number_of_shards": 1, "number_of_replicas": 0}},
-    "mapping": {"properties": {"id": {"type": "long"}, "name": {"type": "keyword"}}},
+    "mappings": {"properties": {"id": {"type": "long"}, "name": {"type": "keyword"}}},
 }
 
 parser = argparse.ArgumentParser(
