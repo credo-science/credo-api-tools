@@ -51,23 +51,17 @@ es = Elasticsearch(args.host, sniff_on_start=False)
 
 def export_user_mapping(users):
     es.indices.create(USER_INDEX_NAME, body=USER_INDEX_CONFIG, ignore=400)
-    bulk(es, users, index=USER_INDEX_NAME, doc_type="user", raise_on_exception=False)
+    bulk(es, users, index=USER_INDEX_NAME, raise_on_exception=False)
 
 
 def export_device_mapping(devices):
     es.indices.create(DEVICE_INDEX_NAME, body=DEVICE_INDEX_CONFIG, ignore=400)
-    bulk(
-        es,
-        devices,
-        index=DEVICE_INDEX_NAME,
-        doc_type="device",
-        raise_on_exception=False,
-    )
+    bulk(es, devices, index=DEVICE_INDEX_NAME, raise_on_exception=False)
 
 
 def export_team_mapping(teams):
     es.indices.create(TEAM_INDEX_NAME, body=TEAM_INDEX_CONFIG, ignore=400)
-    bulk(es, teams, index=TEAM_INDEX_NAME, doc_type="team", raise_on_exception=False)
+    bulk(es, teams, index=TEAM_INDEX_NAME, raise_on_exception=False)
 
 
 def main():

@@ -66,11 +66,10 @@ def process_detections(detections, data_dir):
         es,
         transform_detections(detections),
         index=DETECTION_INDEX_NAME,
-        doc_type="detection",
         raise_on_exception=False,
     )
 
 
 def process_pings(pings, data_dir):
     es.indices.create(PING_INDEX_NAME, body=PING_INDEX_CONFIG, ignore=400)
-    bulk(es, pings, index=PING_INDEX_NAME, doc_type="ping", raise_on_exception=False)
+    bulk(es, pings, index=PING_INDEX_NAME, raise_on_exception=False)
