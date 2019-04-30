@@ -3,7 +3,7 @@ from elasticsearch.helpers import bulk
 
 DETECTION_INDEX_NAME = "credo-detections"
 DETECTION_INDEX_CONFIG = {
-    "settings": {"number_of_shards": 12, "number_of_replicas": 0},
+    "settings": {"index": {"number_of_shards": 12, "number_of_replicas": 0}},
     "mapping": {
         "properties": {
             "accuracy": {"type": "float"},
@@ -29,7 +29,7 @@ DETECTION_INDEX_CONFIG = {
 
 PING_INDEX_NAME = "credo-pings"
 PING_INDEX_CONFIG = {
-    "settings": {"number_of_shards": 12, "number_of_replicas": 0},
+    "settings": {"index": {"number_of_shards": 12, "number_of_replicas": 0}},
     "mapping": {
         "properties": {
             "delta_time": {"type": "long"},
