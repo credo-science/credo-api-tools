@@ -5,11 +5,24 @@ import importlib.util
 import json
 import os
 
-parser = argparse.ArgumentParser(description="Tool for incremental processing of CREDO data")
+parser = argparse.ArgumentParser(
+    description="Tool for incremental processing of CREDO data"
+)
 
-parser.add_argument("--dir", "-d", help="Path to data directory", default="credo-data-export")
-parser.add_argument("--plugin-dir", help="Path to directory containing processing plugins", default="plugins")
-parser.add_argument("--data-type", "-k", help="Type of event to process (ping/detection/all)", default="all")
+parser.add_argument(
+    "--dir", "-d", help="Path to data directory", default="credo-data-export"
+)
+parser.add_argument(
+    "--plugin-dir",
+    help="Path to directory containing processing plugins",
+    default="plugins",
+)
+parser.add_argument(
+    "--data-type",
+    "-k",
+    help="Type of event to process (ping/detection/all)",
+    default="all",
+)
 parser.add_argument("--delete", action="store_true", help="Delete processed files")
 
 args = parser.parse_args()
@@ -67,7 +80,9 @@ def process(events, plugins):
 
 def process_new(data_type):
     specs = [
-        importlib.util.spec_from_file_location(file, "{}/{}".format(args.plugin_dir, file))
+        importlib.util.spec_from_file_location(
+            file, "{}/{}".format(args.plugin_dir, file)
+        )
         for file in os.listdir(args.plugin_dir)
         if file.endswith(".py")
     ]

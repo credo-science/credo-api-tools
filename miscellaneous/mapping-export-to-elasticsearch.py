@@ -6,37 +6,39 @@ from elasticsearch.helpers import bulk
 
 USER_INDEX_NAME = "credo-users"
 USER_INDEX_CONFIG = {
-    "settings": {"number_of_shards": 1, "number_of_replicas": 1},
-    "mappings": {
-        "user": {
-            "properties": {"id": {"type": "long"}, "username": {"type": "keyword"}, "display_name": {"type": "keyword"}}
+    "settings": {"number_of_shards": 1, "number_of_replicas": 0},
+    "mapping": {
+        "properties": {
+            "id": {"type": "long"},
+            "username": {"type": "keyword"},
+            "display_name": {"type": "keyword"},
         }
     },
 }
 
 DEVICE_INDEX_NAME = "credo-devices"
 DEVICE_INDEX_CONFIG = {
-    "settings": {"number_of_shards": 1, "number_of_replicas": 1},
-    "mappings": {
-        "device": {
-            "properties": {
-                "device_model": {"type": "keyword"},
-                "system_version": {"type": "keyword"},
-                "device_type": {"type": "keyword"},
-                "id": {"type": "long"},
-                "user_id": {"type": "keyword"},
-            }
+    "settings": {"number_of_shards": 1, "number_of_replicas": 0},
+    "mapping": {
+        "properties": {
+            "device_model": {"type": "keyword"},
+            "system_version": {"type": "keyword"},
+            "device_type": {"type": "keyword"},
+            "id": {"type": "long"},
+            "user_id": {"type": "keyword"},
         }
     },
 }
 
 TEAM_INDEX_NAME = "credo-teams"
 TEAM_INDEX_CONFIG = {
-    "settings": {"number_of_shards": 1, "number_of_replicas": 1},
-    "mappings": {"team": {"properties": {"id": {"type": "long"}, "name": {"type": "keyword"}}}},
+    "settings": {"number_of_shards": 1, "number_of_replicas": 0},
+    "mapping": {"properties": {"id": {"type": "long"}, "name": {"type": "keyword"}}},
 }
 
-parser = argparse.ArgumentParser(description="Tool for exporting CREDO mappings to Elasticsearch")
+parser = argparse.ArgumentParser(
+    description="Tool for exporting CREDO mappings to Elasticsearch"
+)
 
 parser.add_argument("--host", help="Elasticsearch host", default="127.0.0.1")
 parser.add_argument("--clear", help="Clear previously stored data", action="store_true")
@@ -54,7 +56,13 @@ def export_user_mapping(users):
 
 def export_device_mapping(devices):
     es.indices.create(DEVICE_INDEX_NAME, body=DEVICE_INDEX_CONFIG, ignore=400)
-    bulk(es, devices, index=DEVICE_INDEX_NAME, doc_type="device", raise_on_exception=False)
+    bulk(
+        es,
+        devices,
+        index=DEVICE_INDEX_NAME,
+        doc_type="device",
+        raise_on_exception=False,
+    )
 
 
 def export_team_mapping(teams):

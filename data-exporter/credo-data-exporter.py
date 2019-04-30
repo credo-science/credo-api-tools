@@ -10,16 +10,42 @@ import time
 
 import requests
 
-parser = argparse.ArgumentParser(description="Tool for incremental data export from CREDO")
+parser = argparse.ArgumentParser(
+    description="Tool for incremental data export from CREDO"
+)
 
 parser.add_argument("--username", "-u", help="Username")
 parser.add_argument("--password", "-p", help="Password")
-parser.add_argument("--endpoint", help="API endpoint", default="https://api.credo.science/api/v2")
-parser.add_argument("--dir", "-d", help="Path to data directory", default="credo-data-export")
-parser.add_argument("--token", "-t", help="Access token, used instead of username and password to authenticate")
-parser.add_argument("--max-chunk-size", "-m", help="Maximum number of events in each file", type=int, default=100000)
-parser.add_argument("--data-type", "-k", help="Type of event to update (ping/detection/all/none)", default="all")
-parser.add_argument("--mapping-type", "-l", help="Type of mapping to update (device/user/all/none)", default="none")
+parser.add_argument(
+    "--endpoint", help="API endpoint", default="https://api.credo.science/api/v2"
+)
+parser.add_argument(
+    "--dir", "-d", help="Path to data directory", default="credo-data-export"
+)
+parser.add_argument(
+    "--token",
+    "-t",
+    help="Access token, used instead of username and password to authenticate",
+)
+parser.add_argument(
+    "--max-chunk-size",
+    "-m",
+    help="Maximum number of events in each file",
+    type=int,
+    default=100000,
+)
+parser.add_argument(
+    "--data-type",
+    "-k",
+    help="Type of event to update (ping/detection/all/none)",
+    default="all",
+)
+parser.add_argument(
+    "--mapping-type",
+    "-l",
+    help="Type of mapping to update (device/user/all/none)",
+    default="none",
+)
 
 args = parser.parse_args()
 
@@ -85,7 +111,11 @@ def update_mapping(mapping_type):
     j = get_base_request()
     j["mapping_type"] = mapping_type
 
-    r = requests.post(args.endpoint + "/mapping_export", json=j, headers={"authorization": "Token " + get_token()})
+    r = requests.post(
+        args.endpoint + "/mapping_export",
+        json=j,
+        headers={"authorization": "Token " + get_token()},
+    )
 
     if not r.ok:
         print(r.json())
@@ -141,7 +171,11 @@ def update_data(data_type):
     j["limit"] = args.max_chunk_size
     j["data_type"] = data_type
 
-    r = requests.post(args.endpoint + "/data_export", json=j, headers={"authorization": "Token " + get_token()})
+    r = requests.post(
+        args.endpoint + "/data_export",
+        json=j,
+        headers={"authorization": "Token " + get_token()},
+    )
 
     if not r.ok:
         print(r.json())
@@ -184,7 +218,10 @@ def update_data(data_type):
                 del events
 
                 with open(
-                    "{}/{}s/export_{}_{}.json".format(args.dir, data_type, time_since, last_timestamp), "wb"
+                        "{}/{}s/export_{}_{}.json".format(
+                            args.dir, data_type, time_since, last_timestamp
+                        ),
+                        "wb",
                 ) as f:
                     for chunk in r.iter_content(4096):
                         f.write(chunk)
